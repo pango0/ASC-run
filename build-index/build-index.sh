@@ -1,5 +1,5 @@
 echo "Start building index"
-cd /home/b11902044/m5C-UBSseq/build-index
+cd /home/$USER/m5C-UBSseq/build-index
 
 START_TIME=$(date +%s)
 
