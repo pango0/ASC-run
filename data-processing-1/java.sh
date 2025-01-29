@@ -14,7 +14,7 @@ START_TIME=$(date +%s)
 time java -verbose -server \
     -Xms8G -Xmx40G -Xss100M \
     -Djava.io.tmpdir="$1" \
-    -jar /home/b11902044/m5C-UBSseq/UMICollapse-1.0.0/umicollapse.jar bam \
+    -jar /home/$USER/m5C-UBSseq/UMICollapse-1.0.0/umicollapse.jar bam \
     -t 2 \
     -T 16 \
     --data naive \
