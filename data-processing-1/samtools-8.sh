@@ -16,7 +16,7 @@ hisat-3n-table \
     -p 8 \
     -u \
     --alignments - \
-    --ref /work/b11902044/reference/genome/Homo_sapiens.GRCh38.genome/Homo_sapiens.GRCh38.genome.fa \
+    --ref "$2" \ # DNA
     --output-name /dev/stdout \
     --base-change C,T | \
 cut -f 1,2,3,5,7 | gzip -c > "$1"/gene_filtered_uniq.tsv.gz
