@@ -34,9 +34,9 @@ echo "Processing directory: $1"
 
 # Sequential execution
 run_command "./cutseq.sh $1" "cutseq"
-run_command "./hisat-3n-1.sh $1" "hisat-3n-1"
+run_command "./hisat-3n-1.sh $1 $3" "hisat-3n-1"
 run_command "./samtools-1.sh $1" "samtools-1"
-run_command "./hisat-3n-2.sh $1" "hisat-3n-2"
+run_command "./hisat-3n-2.sh $1 $2" "hisat-3n-2"
 run_command "./samtools-2.sh $1" "samtools-2"
 
 # Parallel execution of samtools-3 and java
@@ -60,9 +60,9 @@ fi
 echo "Starting samtools-4,5,6,7 jobs..."
 ./samtools-4.sh "$1" &
 pid4=$!
-./samtools-5.sh "$1" &
+./samtools-5.sh "$1" "$2" &
 pid5=$!
-./samtools-6.sh "$1" &
+./samtools-6.sh "$1" "$2" &
 pid6=$!
 ./samtools-7.sh "$1" &
 pid7=$!
@@ -76,9 +76,9 @@ fi
 
 # Parallel execution of samtools-8,9
 echo "Starting samtools-8,9 jobs..."
-./samtools-8.sh "$1" &
+./samtools-8.sh "$1" "$2" &
 pid8=$!
-./samtools-9.sh "$1" &
+./samtools-9.sh "$1" "$2" &
 pid9=$!
 
 # Wait for both jobs to complete
