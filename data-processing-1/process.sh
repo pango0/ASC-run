@@ -9,9 +9,9 @@ cd /home/$USER/m5C-UBSseq/data-processing-1
 declare -a job_ids
 
 # Launch jobs and store their IDs
-job_ids[0]=$(sbatch --parsable process-dataset.sh $1)
-job_ids[1]=$(sbatch --parsable process-dataset.sh $2)
-job_ids[2]=$(sbatch --parsable process-dataset.sh $3)
+job_ids[0]=$(sbatch --parsable process-dataset.sh $1 $4 $5)
+job_ids[1]=$(sbatch --parsable process-dataset.sh $2 $4 $5)
+job_ids[2]=$(sbatch --parsable process-dataset.sh $3 $4 $5)
 
 echo "Launched jobs with IDs: ${job_ids[@]}"
 launch_time=$(date +%s)
