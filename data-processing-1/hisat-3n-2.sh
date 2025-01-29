@@ -12,7 +12,7 @@
 #SBATCH --error=%x_%j.err
 START_TIME=$(date +%s)
 time hisat-3n \
-    --index /work/b11902044/reference/genome/Homo_sapiens.GRCh38.genome/Homo_sapiens.GRCh38.genome.fa \
+    --index "$2" \ # DNA
     --summary-file "$1"/map2genome.output.summary \
     --new-summary \
     -q \
