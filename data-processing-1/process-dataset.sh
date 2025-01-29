@@ -15,7 +15,7 @@
 module load miniconda3
 conda activate RNA
 
-cd /home/b11902044/m5C-UBSseq/data-processing-1
+cd /home/$USER/m5C-UBSseq/data-processing-1
 
 start_time=$(date +%s)
 
