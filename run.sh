@@ -66,7 +66,7 @@ fi
 # Run stage 1
 echo "Running stage 1 processing..."
 cd "/home/$USER/m5C-UBSseq/data-processing-1" || handle_error "Changing to data-processing-1 directory" $?
-if ! ./process.sh "${3}" "${4}" "${5}"; then
+if ! ./process.sh "${3}" "${4}" "${5}" "${1}" "${2}"; then
     handle_error "Stage 1 processing" $?
 fi
 
