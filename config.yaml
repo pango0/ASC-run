@@ -1,0 +1,6 @@
+ncRNA_path: "/work/b11902043/ASC-run/data/RNA/reference/genome/Homo_sapiens.GRCh38.sncRNA/Homo_sapiens.GRCh38.sncRNA.fa"
+genome_path: "/work/b11902043/ASC-run/data/RNA/reference/genome/Homo_sapiens.GRCh38.genome/Homo_sapiens.GRCh38.genome.fa"
+test_dirs:
+  - "/work/b11902043/ASC-run/data/RNA/test-data/SRR23538290"
+  - "/work/b11902043/ASC-run/data/RNA/test-data/SRR23538291"
+  - "/work/b11902043/ASC-run/data/RNA/test-data/SRR23538292"

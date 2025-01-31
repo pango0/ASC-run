@@ -11,7 +11,7 @@
 #SBATCH --output=%x_%j.log
 #SBATCH --error=%x_%j.err
 START_TIME=$(date +%s)
-time python /home/$USER/m5C-UBSseq/bin/join_pileup.py \
+time python ../bin/join_pileup.py \
     -i "$1"/gene_unfiltered_uniq.tsv.gz \
     "$1"/gene_unfiltered_multi.tsv.gz \
     "$1"/gene_filtered_uniq.tsv.gz \

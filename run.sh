@@ -19,63 +19,124 @@ handle_error() {
     exit ${exit_code}
 }
 
-# Function to display usage
-usage() {
-    echo "Usage: $0 <genome_path> <ncRNA_path> <test_dir1> <test_dir2> <test_dir3>"
-    echo
-    echo "Arguments:"
-    echo "  genome_path   Path to genome file"
-    echo "  ncRNA_path    Path to ncRNA file"
-    echo "  test_dir1     First test directory"
-    echo "  test_dir2     Second test directory"
-    echo "  test_dir3     Third test directory"
+# Parse config.yaml
+CONFIG_FILE="config.yaml"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file $CONFIG_FILE not found!"
     exit 1
-}
+fi
+
+# Extract parameters using Python
+eval $(python3 - <<EOF
+import yaml
+with open("$CONFIG_FILE", "r") as f:
+    config = yaml.safe_load(f)
+print(f'GENOME_PATH="{config["genome_path"]}"')
+print(f'NCRNA_PATH="{config["ncRNA_path"]}"')
+print(f'TEST_DIRS=({" ".join(config["test_dirs"])})')
+EOF
+)
+
+# Check extracted values
+echo "Genome Path: $GENOME_PATH"
+echo "ncRNA Path: $NCRNA_PATH"
+echo "Test Directories: ${TEST_DIRS[@]}"
+
+echo "-"
+
+# Process each test directory
+for INPUT_DIR in "${TEST_DIRS[@]}"; do
+    # Ensure the directory exists
+    if [ ! -d "$INPUT_DIR" ]; then
+        echo "Error: Directory $INPUT_DIR does not exist. Skipping..."
+        continue
+    fi
+
+    # Extract directory name (e.g., "SRR23538290")
+    DIR_NAME=$(basename "$INPUT_DIR")
+
+    FQ_FILE="$INPUT_DIR/$DIR_NAME.fq"
+
+    # If .fq file already exists, skip decompression
+    if [ -f "$FQ_FILE" ]; then
+        echo "Skipping decompression: $FQ_FILE already exists."
+        continue
+    fi
+
+    # Locate the expected .gz file
+    GZ_FILE="$INPUT_DIR/$DIR_NAME.gz"
+
+    # Ensure the .gz file exists
+    if [ ! -f "$GZ_FILE" ]; then
+        echo "Error: Expected .gz file $GZ_FILE not found. Skipping..."
+        continue
+    fi
+
+    # Decompress .gz to .fq
+    echo "Decompressing $GZ_FILE -> $FQ_FILE"
+    gunzip -c "$GZ_FILE" > "$FQ_FILE"
+
+    # Verify decompression was successful
+    if [[ -f "$FQ_FILE" ]]; then
+        echo "Successfully decompressed: $FQ_FILE"
+    else
+        echo "Error: Decompression failed for $GZ_FILE."
+    fi
+done
+
 
 echo "Start run"
 start_time=$(date +%s)
 
-# Check if required arguments are provided
-if [ $# -ne 5 ]; then
-    echo "Error: Five arguments required" >&2
-    usage
-fi
-
-# Check if input files exist
-if [ ! -f "$1" ]; then
-    echo "ERROR: Genome file $1 does not exist" >&2
-    exit 1
-fi
-
-if [ ! -f "$2" ]; then
-    echo "ERROR: ncRNA file $2 does not exist" >&2
-    exit 1
-fi
-
 # Load modules and activate conda environment
 module load miniconda3
-conda activate rna_env
+conda activate asc
 
 # Run indexing stage
-echo "Running indexing stage..."
-cd "/home/$USER/m5C-UBSseq/build-index" || handle_error "Changing to build-index directory" $?
-if ! ./build-index.sh "${1}" "${2}"; then
+# echo "Running indexing stage..."
+cd "./build-index" || handle_error "Changing to build-index directory" $?
+if ! ./build-index.sh "$GENOME_PATH" "$NCRNA_PATH"; then
     handle_error "Indexing stage" $?
 fi
 
+
+
 # Run stage 1
 echo "Running stage 1 processing..."
-cd "/home/$USER/m5C-UBSseq/data-processing-1" || handle_error "Changing to data-processing-1 directory" $?
-if ! ./process.sh "${3}" "${4}" "${5}" "${1}" "${2}"; then
+cd "../data-processing-1" || handle_error "Changing to data-processing-1 directory" $?
+if ! ./process.sh "${TEST_DIRS[@]}" "$GENOME_PATH" "$NCRNA_PATH"; then
     handle_error "Stage 1 processing" $?
 fi
 
 # Run stage 2
 echo "Running stage 2 processing..."
-cd "/home/$USER/m5C-UBSseq/data-processing-2" || handle_error "Changing to data-processing-2 directory" $?
-if ! ./process.sh "${3}" "${4}" "${5}"; then
+cd "../data-processing-2" || handle_error "Changing to data-processing-2 directory" $?
+if ! ./process.sh "${TEST_DIRS[@]}"; then
     handle_error "Stage 2 processing" $?
 fi
+
+
+for INPUT_DIR in "${TEST_DIRS[@]}"; do
+    INPUT_FILE="$INPUT_DIR/gene.filtered.tsv"
+    if [ ! -f "$INPUT_FILE" ]; then
+        echo "Skipping $INPUT_DIR: gene.tsv not found."
+        continue
+    fi
+
+    DIR_NAME=$(basename "$INPUT_DIR")
+    OUTPUT_FILE="${DIR_NAME}_filtered.tsv"
+
+    echo "Processing $INPUT_FILE -> $OUTPUT_FILE"
+    awk -F '\t' 'NR==1 || $7 < 1e-6' "$INPUT_FILE" > "$OUTPUT_FILE"
+
+    if [[ -f "$OUTPUT_FILE" ]]; then
+        echo "Successfully created: $OUTPUT_FILE"
+    else
+        echo "Error: Failed to create $OUTPUT_FILE."
+    fi
+done
+
 
 end_time=$(date +%s)
 total_runtime=$((end_time - start_time))

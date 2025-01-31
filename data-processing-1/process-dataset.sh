@@ -13,9 +13,9 @@
 
 # Load environment
 module load miniconda3
-conda activate RNA
+conda activate asc
 
-cd /home/$USER/m5C-UBSseq/data-processing-1
+# cd ./data-processing-1
 
 start_time=$(date +%s)
 

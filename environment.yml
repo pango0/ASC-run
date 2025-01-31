@@ -1,0 +1,26 @@
+name: asc
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - openjdk=17
+  - star
+  - samtools
+  - sra-tools
+  - bedtools
+  - subread      # featureCounts
+  - picard
+  - fastqc
+  - trim-galore
+  - umicollapse
+  - pigz
+  - parallel
+  - snakemake
+  - pip
+  - pip:
+    - pyfastx
+    - cutseq
+    - polars
+    - spicy

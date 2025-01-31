@@ -1,10 +1,10 @@
 echo "Start building index"
-cd /home/$USER/m5C-UBSseq/build-index
+# cd build-index
 
 START_TIME=$(date +%s)
 
-./dna-build-index.sh $1 &
-./rna-build-index.sh $2 &
+./dna-build-index.sh $1 > dna-build.log 2> dna-build.err &
+./rna-build-index.sh $2 > rna-build.log 2> rna-build.err &
 
 wait
 

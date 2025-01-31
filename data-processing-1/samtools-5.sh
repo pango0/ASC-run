@@ -16,7 +16,7 @@ hisat-3n-table \
     -p 8 \
     -u \
     --alignments - \
-    --ref "$2" \ # DNA
+    --ref "$2" \
     --output-name /dev/stdout \
     --base-change C,T | \
 cut -f 1,2,3,5,7 | gzip -c > "$1"/gene_unfiltered_uniq.tsv.gz

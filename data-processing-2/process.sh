@@ -19,19 +19,19 @@ cp "$3"/gene_genome.arrow 3.arrow
 
 set -e
 echo "first cmd"
-time python /home/$USER/m5C-UBSseq/bin/group_pileup.py -i 1.arrow 2.arrow 3.arrow -o WT.arrow
+time python ../bin/group_pileup.py -i 1.arrow 2.arrow 3.arrow -o WT.arrow
 echo "first cmd done"
 echo "second cmd"
-time python /home/$USER/m5C-UBSseq/bin/select_sites.py -i ./WT.arrow -o ./WT.prefilter.tsv
+time python ../bin/select_sites.py -i ./WT.arrow -o ./WT.prefilter.tsv
 echo "second cmd done"
 set +e
 
 # Run the last three commands in parallel
-time python /home/$USER/m5C-UBSseq/bin/filter_sites.py -i "$1"/gene_genome.arrow -m ./WT.prefilter.tsv -b "$1"/gene.bg.tsv -o "$1"/gene.filtered.tsv &
+time python ../bin/filter_sites.py -i "$1"/gene_genome.arrow -m ./WT.prefilter.tsv -b "$1"/gene.bg.tsv -o "$1"/gene.filtered.tsv &
 
-time python /home/$USER/m5C-UBSseq/bin/filter_sites.py -i "$2"/gene_genome.arrow -m ./WT.prefilter.tsv -b "$2"/gene.bg.tsv -o "$2"/gene.filtered.tsv &
+time python ../bin/filter_sites.py -i "$2"/gene_genome.arrow -m ./WT.prefilter.tsv -b "$2"/gene.bg.tsv -o "$2"/gene.filtered.tsv &
 
-time python /home/$USER/m5C-UBSseq/bin/filter_sites.py -i "$3"/gene_genome.arrow -m ./WT.prefilter.tsv -b "$3"/gene.bg.tsv -o "$3"/gene.filtered.tsv &
+time python ../bin/filter_sites.py -i "$3"/gene_genome.arrow -m ./WT.prefilter.tsv -b "$3"/gene.bg.tsv -o "$3"/gene.filtered.tsv &
 
 # Wait for all background jobs to complete
 wait

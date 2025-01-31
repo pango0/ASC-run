@@ -11,8 +11,12 @@
 #SBATCH --output=%x_%j.log
 #SBATCH --error=%x_%j.err
 START_TIME=$(date +%s)
+echo "1: $1"
+echo "2: $2"
+
+
 time hisat-3n \
-    --index "$2" \ # RNA
+    --index "$2" \
     --summary-file "$1"/map2ncrna.output.summary \
     --new-summary \
     -q \

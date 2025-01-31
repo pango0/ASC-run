@@ -3,7 +3,6 @@ echo "Start processing datasets stage 1"
 # Record start time
 start_time=$(date +%s)
 
-cd /home/$USER/m5C-UBSseq/data-processing-1
 
 # Array to store job IDs
 declare -a job_ids

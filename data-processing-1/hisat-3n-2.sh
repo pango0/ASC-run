@@ -11,8 +11,18 @@
 #SBATCH --output=%x_%j.log
 #SBATCH --error=%x_%j.err
 START_TIME=$(date +%s)
+
+# FQ_DIR=$2
+
+# BASENAME=$(basename "$FQ_DIR")
+
+# FQ_FILE="$FQ_DIR/$BASENAME.gz"
+
+
+# echo "FQ_FILE : $FQ_FILE"
+
 time hisat-3n \
-    --index "$2" \ # DNA
+    --index "$2" \
     --summary-file "$1"/map2genome.output.summary \
     --new-summary \
     -q \
