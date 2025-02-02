@@ -1,0 +1,8 @@
+*.err
+*.log 
+build-index/*.err
+build-index/*.log
+data-processing-1/*.err
+data-processing-1/*.log
+data-processing-2/*.tsv 
+data-processing-2/*.arrow 
