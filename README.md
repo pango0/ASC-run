@@ -26,9 +26,17 @@ prefetch GSM7051146
 prefetch GSM7051147
 prefetch GSM7051148
 
-fastq-dump --split-files --gzip SRR23538292 # GSM7051146
-fastq-dump --split-files --gzip SRR23538291 # GSM7051147
-fastq-dump --split-files --gzip SRR23538290 # GSM7051148
+fastq-dump --split-files SRR23538292 # GSM7051146
+fastq-dump --split-files SRR23538291 # GSM7051147
+fastq-dump --split-files SRR23538290 # GSM7051148
+
+mkdir SRR23538292
+mkdir SRR23538291
+mkdir SRR23538290
+
+mv SRR23538292_1.fastq SRR23538292/SRR23538292.fq
+mv SRR23538291_1.fastq SRR23538291/SRR23538291.fq
+mv SRR23538290_1.fastq SRR23538290/SRR23538290.fq
 ```
 
 ## Expected Directory Structure
@@ -58,7 +66,7 @@ data
 
 ## Running the Pipeline
 ### 1. Edit `config.yaml`
-Put obsolute path of required testing data and reference data into `config.yaml`
+Put absolute path of required testing data and reference data into `config.yaml`
 
 
 
