@@ -21,23 +21,44 @@ conda activate asc
 ```
 
 ## Data Preparation
-```bash
-prefetch GSM7051146
-prefetch GSM7051147
-prefetch GSM7051148
+- Reference data 
+    ```bash
+    mkdir -p /work/$USER/RNA/reference/{genome,index/hisat3n}/{Homo_sapiens.GRCh38.sncRNA,Homo_sapiens.GRCh38.genome}
 
-fastq-dump --split-files SRR23538292 # GSM7051146
-fastq-dump --split-files SRR23538291 # GSM7051147
-fastq-dump --split-files SRR23538290 # GSM7051148
+    # Download Genome Data
 
-mkdir SRR23538292
-mkdir SRR23538291
-mkdir SRR23538290
+    cd /work/$USER/RNA/reference/genome/Homo_sapiens.GRCh38.genome
+    wget https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+    gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+    mv Homo_sapiens.GRCh38.dna.primary_assembly.fa Homo_sapiens.GRCh38.genome.fa
 
-mv SRR23538292_1.fastq SRR23538292/SRR23538292.fq
-mv SRR23538291_1.fastq SRR23538291/SRR23538291.fq
-mv SRR23538290_1.fastq SRR23538290/SRR23538290.fq
-```
+    # Download ncRNA Data
+
+    cd /work/$USER/RNA/reference/genome/Homo_sapiens.GRCh38.sncRNA
+    wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_47/gencode.v47.lncRNA_transcripts.fa.gz
+    gunzip gencode.v47.lncRNA_transcripts.fa.gz
+    mv gencode.v47.lncRNA_transcripts.fa Homo_sapiens.GRCh38.sncRNA.fa
+
+    ```
+
+- Raw data 
+    ```bash
+    prefetch GSM7051146
+    prefetch GSM7051147
+    prefetch GSM7051148
+
+    fastq-dump --split-files SRR23538292 # GSM7051146
+    fastq-dump --split-files SRR23538291 # GSM7051147
+    fastq-dump --split-files SRR23538290 # GSM7051148
+
+    mkdir SRR23538292
+    mkdir SRR23538291
+    mkdir SRR23538290
+
+    mv SRR23538292_1.fastq SRR23538292/SRR23538292.fq
+    mv SRR23538291_1.fastq SRR23538291/SRR23538291.fq
+    mv SRR23538290_1.fastq SRR23538290/SRR23538290.fq
+    ```
 
 ## Expected Directory Structure
 ```
