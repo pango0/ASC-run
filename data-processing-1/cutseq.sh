@@ -20,6 +20,7 @@ FQ_FILE="$FQ_DIR/$BASENAME.fq"
 
 echo "FQ_FILE : $FQ_FILE"
 
+START_TIME=$(date +%s)
 
 time cutseq "$FQ_FILE" -t 8 -A INLINE -m 20 --trim-polyA --ensure-inline-barcode -o "$1"/gene-cut.fq -s "$1"/gene-tooshort.fq -u "$1"/gene-untrimmed.fq
 

@@ -11,6 +11,9 @@
 #SBATCH --output=%x_%j.log
 #SBATCH --error=%x_%j.err
 
+# store initial cwd
+INITIAL_DIR=$(pwd)
+
 # Function to handle errors
 handle_error() {
     local stage=$1
@@ -116,6 +119,10 @@ if ! ./process.sh "${TEST_DIRS[@]}"; then
     handle_error "Stage 2 processing" $?
 fi
 
+# return to init dir
+cd "$INITIAL_DIR" || handle_error "Returning to initial directory" $?
+FINAL_DIR="$INITIAL_DIR/final_result"
+mkdir -p "$FINAL_DIR"
 
 for INPUT_DIR in "${TEST_DIRS[@]}"; do
     INPUT_FILE="$INPUT_DIR/gene.filtered.tsv"
@@ -125,7 +132,7 @@ for INPUT_DIR in "${TEST_DIRS[@]}"; do
     fi
 
     DIR_NAME=$(basename "$INPUT_DIR")
-    OUTPUT_FILE="${DIR_NAME}_filtered.tsv"
+    OUTPUT_FILE="$FINAL_DIR/${DIR_NAME}_filtered.tsv"
 
     echo "Processing $INPUT_FILE -> $OUTPUT_FILE"
     awk -F '\t' 'NR==1 || $7 < 1e-6' "$INPUT_FILE" > "$OUTPUT_FILE"
