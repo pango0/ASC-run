@@ -23,18 +23,18 @@ conda activate asc
 ## Data Preparation
 - Reference data 
     ```bash
-    mkdir -p /work/$USER/RNA/reference/{genome,index/hisat3n}/{Homo_sapiens.GRCh38.sncRNA,Homo_sapiens.GRCh38.genome}
+    mkdir -p /work/$USER/RNA/reference/
 
     # Download Genome Data
 
-    cd /work/$USER/RNA/reference/genome/Homo_sapiens.GRCh38.genome
+    cd /work/$USER/RNA/reference
     wget https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
     gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
     mv Homo_sapiens.GRCh38.dna.primary_assembly.fa Homo_sapiens.GRCh38.genome.fa
 
     # Download ncRNA Data
 
-    cd /work/$USER/RNA/reference/genome/Homo_sapiens.GRCh38.sncRNA
+    cd /work/$USER/RNA/reference
     wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_47/gencode.v47.lncRNA_transcripts.fa.gz
     gunzip gencode.v47.lncRNA_transcripts.fa.gz
     mv gencode.v47.lncRNA_transcripts.fa Homo_sapiens.GRCh38.sncRNA.fa
@@ -43,6 +43,8 @@ conda activate asc
 
 - Raw data 
     ```bash
+    mkdir -p /work/$USER/RNA/test-data/
+    cd /work/$USER/RNA/test-data/
     prefetch GSM7051146
     prefetch GSM7051147
     prefetch GSM7051148
@@ -65,11 +67,8 @@ conda activate asc
 data
 └── RNA
     ├── reference
-    │   └── genome
-    │       ├── Homo_sapiens.GRCh38.genome
-    │       │   └── Homo_sapiens.GRCh38.genome.fa
-    │       └── Homo_sapiens.GRCh38.sncRNA
-    │           └── Homo_sapiens.GRCh38.sncRNA.fa
+    │   ├── Homo_sapiens.GRCh38.genome.fa
+    │   └── Homo_sapiens.GRCh38.sncRNA.fa
     └── test-data
         ├── SRR23538290
         │   ├── SRR23538290.fq
