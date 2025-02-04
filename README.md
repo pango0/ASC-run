@@ -62,7 +62,7 @@ conda activate asc
 
 ## Expected Directory Structure
 ```
-$USER
+data
 └── RNA
     ├── reference
     │   └── genome
