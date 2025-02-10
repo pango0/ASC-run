@@ -19,7 +19,7 @@ hisat-3n-table \
     --ref "$2" \
     --output-name /dev/stdout \
     --base-change C,T | \
-cut -f 1,2,3,5,7 | gzip -c > "$1"/gene_unfiltered_uniq.tsv.gz
+cut -f 1,2,3,5,7 | pigz -p 32 -c > "$1"/gene_unfiltered_uniq.tsv.gz
 end_time=$(date +%s)
 duration=$((end_time - START_TIME))
 hours=$((duration / 3600))
