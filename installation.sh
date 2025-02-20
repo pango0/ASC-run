@@ -14,8 +14,8 @@ git clone https://github.com/DaehwanKimLab/hisat2.git hisat-3n
 cd hisat-3n
 git checkout -b hisat-3n origin/hisat-3n
 
-make -j32 \
-    CFLAGS="-g -Wall -O2 -I$CONDA_PREFIX/include" \
+make -j$(nproc) \
+    CFLAGS="-O3 -march=native -mtune=native -flto -fopenmp -mavx2 -I$CONDA_PREFIX/include" \
     CPPFLAGS="-I$CONDA_PREFIX/include" \
     LDFLAGS="-L$CONDA_PREFIX/lib"
 
@@ -28,6 +28,5 @@ chmod +x $CONDA_PREFIX/bin/hisat2*
 
 cd ..
 rm -rf hisat-3n
-
 
 echo "HISAT-3N installation completed successfully!"

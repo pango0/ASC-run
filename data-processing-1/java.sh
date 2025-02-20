@@ -1,22 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=java
-#SBATCH --partition=gp4d
-#SBATCH --nodes=4
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=180G
-#SBATCH --time=96:00:00
-#SBATCH --gpus-per-node=2
-#SBATCH --account=ACD114010
-#SBATCH --output=%x_%j.log
-#SBATCH --error=%x_%j.err
+
 START_TIME=$(date +%s)
 time java -verbose -server \
-    -Xms8G -Xmx40G -Xss100M \
+    -Xms32G -Xmx64G -Xss100M \
     -Djava.io.tmpdir="$1" \
     -jar $CONDA_PREFIX/share/umicollapse-1.1.0-0/umicollapse.jar bam \
-    -t 2 \
-    -T 16 \
+    -t $(($2 - 2)) \
+    -T $(($2 - 2)) \
     --data naive \
     --merge avgqual \
     --two-pass \

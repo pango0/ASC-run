@@ -1,18 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=hisat-3n-1
-#SBATCH --partition=gp4d
-#SBATCH --nodes=4
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=180G
-#SBATCH --time=96:00:00
-#SBATCH --gpus-per-node=2
-#SBATCH --account=ACD114010
-#SBATCH --output=%x_%j.log
-#SBATCH --error=%x_%j.err
+
 START_TIME=$(date +%s)
 echo "1: $1"
 echo "2: $2"
+THREADS=$3
 
 
 time hisat-3n \
@@ -26,7 +17,7 @@ time hisat-3n \
     --mp 8,2 \
     --no-spliced-alignment \
     --directional-mapping | \
-samtools view -@ 8 -e '!flag.unmap' \
+samtools view -@ $THREADS -e '!flag.unmap' \
     -O BAM \
     -U "$1"/gene.ncrna.unmapped.bam \
     -o "$1"/gene.ncrna.mapped.bam

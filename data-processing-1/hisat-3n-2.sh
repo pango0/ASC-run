@@ -1,15 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=hisat-3n-2
-#SBATCH --partition=gp4d
-#SBATCH --nodes=4
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=180G
-#SBATCH --time=96:00:00
-#SBATCH --gpus-per-node=2
-#SBATCH --account=ACD114010
-#SBATCH --output=%x_%j.log
-#SBATCH --error=%x_%j.err
+
 START_TIME=$(date +%s)
 
 # FQ_DIR=$2
@@ -27,12 +17,12 @@ time hisat-3n \
     --new-summary \
     -q \
     -U "$1"/gene.mRNA.fastq \
-    -p 8 \
+    -p 48 \
     --base-change C,T \
     --mp 4,1 \
     --pen-noncansplice 20 \
     --directional-mapping | \
-samtools view -@ 8 -e '!flag.unmap' \
+samtools view -@ $3 -e '!flag.unmap' \
     -O BAM \
     -U "$1"/gene.mRNA.genome.unmapped.bam \
     -o "$1"/gene.mRNA.genome.mapped.bam

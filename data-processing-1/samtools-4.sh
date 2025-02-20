@@ -1,17 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=samtools-4
-#SBATCH --partition=gp4d
-#SBATCH --nodes=4
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=180G
-#SBATCH --time=96:00:00
-#SBATCH --gpus-per-node=2
-#SBATCH --account=ACD114010
-#SBATCH --output=%x_%j.log
-#SBATCH --error=%x_%j.err
+
 START_TIME=$(date +%s)
-time samtools index -@ 8 "$1"/gene.mRNA.genome.mapped.sorted.dedup.bam "$1"/gene.mRNA.genome.mapped.sorted.dedup.bam.bai
+time samtools index -@ $2 "$1"/gene.mRNA.genome.mapped.sorted.dedup.bam "$1"/gene.mRNA.genome.mapped.sorted.dedup.bam.bai
 end_time=$(date +%s)
 duration=$((end_time - START_TIME))
 hours=$((duration / 3600))

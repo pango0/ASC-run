@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=process-dataset
 #SBATCH --partition=gp4d
-#SBATCH --nodes=4
+#SBATCH --nodes=2
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=24
 #SBATCH --mem=180G
 #SBATCH --time=96:00:00
-#SBATCH --gpus-per-node=2
+#SBATCH --gpus-per-node=6
 #SBATCH --account=ACD114010
 #SBATCH --output=%x_%j.log
 #SBATCH --error=%x_%j.err
@@ -16,6 +16,8 @@ module load miniconda3
 conda activate asc
 
 # cd ./data-processing-1
+
+THREADS=$4
 
 start_time=$(date +%s)
 
@@ -33,17 +35,18 @@ run_command() {
 echo "Processing directory: $1"
 
 # Sequential execution
-run_command "./cutseq.sh $1" "cutseq"
-run_command "./hisat-3n-1.sh $1 $3" "hisat-3n-1"
-run_command "./samtools-1.sh $1" "samtools-1"
-run_command "./hisat-3n-2.sh $1 $2" "hisat-3n-2"
-run_command "./samtools-2.sh $1" "samtools-2"
+
+run_command "./cutseq.sh $1 $THREADS" "cutseq"
+run_command "./hisat-3n-1.sh $1 $3 $THREADS" "hisat-3n-1"
+run_command "./samtools-1.sh $1 $THREADS" "samtools-1"
+run_command "./hisat-3n-2.sh $1 $2 $THREADS" "hisat-3n-2"
+run_command "./samtools-2.sh $1 $THREADS" "samtools-2"
 
 # Parallel execution of samtools-3 and java
 echo "Starting samtools-3 and java jobs..."
-./samtools-3.sh "$1" &
+./samtools-3.sh "$1" "$THREADS" &
 samtools_3_pid=$!
-./java.sh "$1" &
+./java.sh "$1" "$THREADS" &
 java_pid=$!
 
 # Wait for both jobs to complete
@@ -58,13 +61,13 @@ fi
 
 # Parallel execution of samtools-4,5,6,7
 echo "Starting samtools-4,5,6,7 jobs..."
-./samtools-4.sh "$1" &
+./samtools-4.sh "$1" "$THREADS" &
 pid4=$!
-./samtools-5.sh "$1" "$2" &
+./samtools-5.sh "$1" "$2" "$THREADS" &
 pid5=$!
-./samtools-6.sh "$1" "$2" &
+./samtools-6.sh "$1" "$2" "$THREADS" &
 pid6=$!
-./samtools-7.sh "$1" &
+./samtools-7.sh "$1" "$THREADS" &
 pid7=$!
 
 wait $pid7
@@ -76,9 +79,9 @@ fi
 
 # Parallel execution of samtools-8,9
 echo "Starting samtools-8,9 jobs..."
-./samtools-8.sh "$1" "$2" &
+./samtools-8.sh "$1" "$2" "$THREADS" &
 pid8=$!
-./samtools-9.sh "$1" "$2" &
+./samtools-9.sh "$1" "$2" "$THREADS" &
 pid9=$!
 
 # Wait for both jobs to complete

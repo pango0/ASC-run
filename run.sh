@@ -1,15 +1,18 @@
 #!/bin/bash
+
 #SBATCH --job-name=run
 #SBATCH --partition=gp4d
-#SBATCH --nodes=4
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=4
 #SBATCH --mem=180G
 #SBATCH --time=96:00:00
-#SBATCH --gpus-per-node=2
+#SBATCH --gpus-per-node=1
 #SBATCH --account=ACD114010
 #SBATCH --output=%x_%j.log
 #SBATCH --error=%x_%j.err
+
+export CUDA_VISIBLE_DEVICES=0,1
 
 # store initial cwd
 INITIAL_DIR=$(pwd)
@@ -103,7 +106,7 @@ if ! ./build-index.sh "$GENOME_PATH" "$NCRNA_PATH"; then
     handle_error "Indexing stage" $?
 fi
 
-
+stage1_start_time=$(date +%s)
 
 # Run stage 1
 echo "Running stage 1 processing..."
@@ -151,3 +154,10 @@ hours=$((total_runtime / 3600))
 minutes=$(((total_runtime % 3600) / 60))
 seconds=$((total_runtime % 60))
 echo "Run total execution time: ${hours}h ${minutes}m ${seconds}s"
+
+stage1_to_end_runtime=$((end_time - stage1_start_time))
+s1_hours=$((stage1_to_end_runtime / 3600))
+s1_minutes=$(((stage1_to_end_runtime % 3600) / 60))
+s1_seconds=$((stage1_to_end_runtime % 60))
+
+echo "Execution time (cutseq -> End execution time): ${s1_hours}h ${s1_minutes}m ${s1_seconds}s"
